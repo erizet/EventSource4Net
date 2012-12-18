@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<package >
+  <metadata>
+    <id>$id$</id>
+    <version>$version$</version>
+    <title>$title$</title>
+    <authors>Erik Zetterqvist</authors>
+    <owners>$author$</owners>
+    <projectUrl>https://github.com/erizet/EventSource4Net</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>Eventsource for .net. Makes it simple to receive Server-Sent Events (SSE) in managed applications.</description>
+    <releaseNotes>First release.</releaseNotes>
+    <copyright>Copyright 2012</copyright>
+    <tags>Eventsource Server-Sent Events SSE</tags>
+  </metadata>
+</package>

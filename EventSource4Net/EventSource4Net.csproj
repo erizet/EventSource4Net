@@ -50,7 +50,17 @@
     <Compile Include="ServerSentEventReceivedEventArgs.cs" />
     <Compile Include="StateChangedEventArgs.cs" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="EventSource4Net.nuspec" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>if "$(ConfigurationName)" == "Release" (
+
+NuGet.exe pack "$(ProjectDir)EventSource4Net.csproj" -Prop Configuration=Release
+
+)</PostBuildEvent>
+  </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
