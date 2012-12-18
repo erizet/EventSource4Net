@@ -1,0 +1,26 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2012
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EventSource4Net", "EventSource4Net\EventSource4Net.csproj", "{DF919631-8C28-49E6-BE61-23787AF2A90D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sample", "Sample\Sample.csproj", "{4A59424A-EA6A-49B6-805A-E8DDFB1CC8F3}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{DF919631-8C28-49E6-BE61-23787AF2A90D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DF919631-8C28-49E6-BE61-23787AF2A90D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DF919631-8C28-49E6-BE61-23787AF2A90D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DF919631-8C28-49E6-BE61-23787AF2A90D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4A59424A-EA6A-49B6-805A-E8DDFB1CC8F3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4A59424A-EA6A-49B6-805A-E8DDFB1CC8F3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4A59424A-EA6A-49B6-805A-E8DDFB1CC8F3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4A59424A-EA6A-49B6-805A-E8DDFB1CC8F3}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
