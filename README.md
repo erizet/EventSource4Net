@@ -1,4 +1,4 @@
-[nuget]:[https://nuget.org/packages/EventSource4Net]
+[nuget]: https://nuget.org/packages/EventSource4Net
 EventSource4Net
 ===============
 
@@ -7,7 +7,7 @@ EventSource4Net is a eventsource implementation for .Net. By using EventSource4N
 ##Install##
 EventSource4Net is available as a [Nuget-package][nuget]. From the Package Manager Console enter:
             
-            Istall-package EventSource4Net
+            Install-package EventSource4Net
 
 ##How to use?##
 
