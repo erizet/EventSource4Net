@@ -12,7 +12,7 @@ namespace Sample
     {
         static void Main(string[] args)
         {
-            EventSource es = new EventSource(new Uri(@"http://localhost:49999/api/chart/"));
+            EventSource es = new EventSource(new Uri(@"http://ssetest.apphb.com/api/sse"));
             es.StateChanged += new EventHandler<StateChangedEventArgs>((o, e) => { Console.WriteLine("New state: " + e.State.ToString()); });
             es.EventReceived += new EventHandler<ServerSentEventReceivedEventArgs>((o, e) => { Console.WriteLine("--------- Msg received -----------\n" + e.Message.ToString()); });
             es.Start();
