@@ -10,6 +10,8 @@ namespace EventSource4Net
 {
     public class EventSource
     {
+        private static readonly slf4net.ILogger _logger = slf4net.LoggerFactory.GetLogger(typeof(EventSource));
+
         public event EventHandler<StateChangedEventArgs> StateChanged;
         public event EventHandler<ServerSentEventReceivedEventArgs> EventReceived;
 
@@ -24,6 +26,7 @@ namespace EventSource4Net
             {
                 if (!value.Equals(mCurrentState))
                 {
+                    _logger.Trace("State changed from " + mCurrentState ?? mCurrentState.State.ToString() + " -> " + value.State.ToString());
                     mCurrentState = value;
                     OnStateChanged(mCurrentState.State);
                 }
@@ -34,6 +37,7 @@ namespace EventSource4Net
         {
             Url = url;
             CurrentState = new DisconnectedState(Url);
+            _logger.Info("EventSource created for " + url.ToString());
         }
 
         public void Start()

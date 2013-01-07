@@ -10,6 +10,8 @@ namespace EventSource4Net
 {
     class ConnectingState : IConnectionState
     {
+        private static readonly slf4net.ILogger _logger = slf4net.LoggerFactory.GetLogger(typeof(ConnectingState));
+
         private Uri mUrl;
         public EventSourceState State { get { return EventSourceState.CONNECTING; } }
         
@@ -37,6 +39,10 @@ namespace EventSource4Net
                     if (resp != null && resp.StatusCode == HttpStatusCode.OK)
                     {
                         return new ConnectedState(resp);
+                    }
+                    else
+                    {
+                        _logger.Info("Failed to connect to: " + mUrl.ToString() + resp ?? (" Http statuscode: " + resp.StatusCode));
                     }
                 }
 

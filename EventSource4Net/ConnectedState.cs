@@ -10,6 +10,8 @@ namespace EventSource4Net
 {
     class ConnectedState : IConnectionState
     {
+        private static readonly slf4net.ILogger _logger = slf4net.LoggerFactory.GetLogger(typeof(ConnectedState));
+
         private HttpWebResponse mResponse;
         public EventSourceState State { get { return EventSourceState.OPEN; } }
 
@@ -43,11 +45,13 @@ namespace EventSource4Net
                             // Dispatch message if empty lne
                             if(string.IsNullOrEmpty(line.Trim()) && sse!=null)
                             {
+                                _logger.Trace("Message received");
                                 msgReceived(sse);
                             }
                             else if(line.StartsWith(":"))
                             {
                                 // This a comment, just log it.
+                                _logger.Trace("A comment was received: " + line);
                             }
                             else
                             {
@@ -89,6 +93,7 @@ namespace EventSource4Net
                                 else
                                 {
                                     // Ignore this, just log it
+                                    _logger.Warn("A unknown line was received: " + line);
                                 }
                             }
                         }
@@ -97,7 +102,7 @@ namespace EventSource4Net
                     }
                     else // end of the stream reached
                     {
-                        Console.WriteLine("ReadCallback no bytes read");
+                        _logger.Trace("No bytes read. End of stream.");
                     }
                 }
                 return new DisconnectedState(mResponse.ResponseUri);
