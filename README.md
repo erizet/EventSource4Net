@@ -13,7 +13,7 @@ EventSource4Net is available as a [Nuget-package][nuget]. From the Package Manag
 
 It's dead-simple to use.
 
-            EventSource es = new EventSource(new Uri(<Your url>);
+            EventSource es = new EventSource(new Uri(<Your url>));
             es.StateChanged += new EventHandler<StateChangedEventArgs>((o, e) => { Console.WriteLine("New state: " + e.State.ToString()); });
             es.EventReceived += new EventHandler<ServerSentEventReceivedEventArgs>((o, e) => { Console.WriteLine("--------- Msg received -----------\n" + e.Message.ToString()); });
             es.Start();
