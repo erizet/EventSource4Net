@@ -1,4 +1,5 @@
 [nuget]: https://nuget.org/packages/EventSource4Net
+[slf4net]: https://github.com/englishtown/slf4net
 EventSource4Net
 ===============
 
@@ -20,9 +21,11 @@ It's dead-simple to use.
 
 See the sample-project!
 
+##Logging##
+EventSource4Net uses [slf4net] as a logging facade.
+
 ##ToDo##
 - Implement functionallity to cancel the eventsource.
-- Add a logging facade
 
 ##Contributions##
 I'll be more than happy to get contributions!!!

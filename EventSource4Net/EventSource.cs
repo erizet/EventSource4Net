@@ -26,7 +26,11 @@ namespace EventSource4Net
             {
                 if (!value.Equals(mCurrentState))
                 {
-                    _logger.Trace("State changed from " + mCurrentState ?? mCurrentState.State.ToString() + " -> " + value.State.ToString());
+                    StringBuilder sb = new StringBuilder("State changed from ");
+                    sb.Append(mCurrentState == null ? "Unknown" : mCurrentState.State.ToString());
+                    sb.Append(" to ");
+                    sb.Append(value == null ? "Unknown" : value.State.ToString());
+                    _logger.Trace(sb.ToString());
                     mCurrentState = value;
                     OnStateChanged(mCurrentState.State);
                 }
