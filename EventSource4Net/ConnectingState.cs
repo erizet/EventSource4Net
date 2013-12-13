@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Net;
 using System.IO;
+using System.Threading;
 
 namespace EventSource4Net
 {
@@ -20,8 +21,8 @@ namespace EventSource4Net
             if(url==null) throw new ArgumentNullException("Url cant be null");
             mUrl = url;
         }
-        
-        public Task<IConnectionState> Run(Action<ServerSentEvent> donothing)
+
+        public Task<IConnectionState> Run(Action<ServerSentEvent> donothing, CancellationToken cancelToken)
         {
             var wreq = (HttpWebRequest)WebRequest.Create(mUrl);
             wreq.Method = "GET";
@@ -33,7 +34,7 @@ namespace EventSource4Net
 
             return taskResp.ContinueWith<IConnectionState>(tsk => 
             {
-                if (tsk.Status == TaskStatus.RanToCompletion)
+                if (tsk.Status == TaskStatus.RanToCompletion && !cancelToken.IsCancellationRequested)
                 {
                     HttpWebResponse resp = tsk.Result as HttpWebResponse;
                     if (resp != null && resp.StatusCode == HttpStatusCode.OK)

@@ -5,6 +5,7 @@ using System.Text;
 using System.Net;
 using System.IO;
 using System.Threading.Tasks;
+using System.Threading;
 
 namespace EventSource4Net
 {
@@ -15,10 +16,14 @@ namespace EventSource4Net
         public event EventHandler<StateChangedEventArgs> StateChanged;
         public event EventHandler<ServerSentEventReceivedEventArgs> EventReceived;
 
+
+        private int _timeout = 0;
         public Uri Url { get; private set; }
         public EventSourceState State { get { return CurrentState.State; } }
         public string LastEventId { get; private set; }
         private IConnectionState mCurrentState = null;
+        private CancellationToken mStopToken;
+        private CancellationTokenSource mTokenSource = new CancellationTokenSource();
         private IConnectionState CurrentState
         {
             get { return mCurrentState; }
@@ -37,28 +42,34 @@ namespace EventSource4Net
             }
         }
 
-        public EventSource(Uri url)
+        public EventSource(Uri url, int timeout)
         {
+            _timeout = timeout;
             Url = url;
             CurrentState = new DisconnectedState(Url);
             _logger.Info("EventSource created for " + url.ToString());
         }
 
-        public void Start()
+        /// <summary>
+        /// Start the EventSource. 
+        /// </summary>
+        /// <param name="stopToken">Cancel this token to stop the EventSource.</param>
+        public void Start(CancellationToken stopToken)
         {
             if (State == EventSourceState.CLOSED)
             {
+                mStopToken = stopToken;
+                mTokenSource = CancellationTokenSource.CreateLinkedTokenSource(stopToken);
                 Run();
             }
         }
 
-        public void Stop()
-        {
-        }
-
         protected void Run()
         {
-            mCurrentState.Run(this.OnEventReceived).ContinueWith(cs =>
+            if (mTokenSource.IsCancellationRequested && CurrentState.State == EventSourceState.CLOSED)
+                return;
+
+            mCurrentState.Run(this.OnEventReceived, mTokenSource.Token).ContinueWith(cs =>
             {
                 CurrentState = cs.Result;
                 Run();

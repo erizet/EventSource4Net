@@ -52,6 +52,8 @@
     <Compile Include="ServerSentEvent.cs" />
     <Compile Include="ServerSentEventReceivedEventArgs.cs" />
     <Compile Include="StateChangedEventArgs.cs" />
+    <Compile Include="StringSplitter.cs" />
+    <Compile Include="WatchDog.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="EventSource4Net.nuspec" />

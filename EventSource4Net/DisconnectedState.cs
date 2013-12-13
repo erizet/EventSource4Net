@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace EventSource4Net
@@ -20,9 +21,12 @@ namespace EventSource4Net
             mUrl = url;
         }
 
-        public Task<IConnectionState> Run(Action<ServerSentEvent> donothing)
+        public Task<IConnectionState> Run(Action<ServerSentEvent> donothing, CancellationToken cancelToken)
         {
-            return Task.Factory.StartNew<IConnectionState>(() => { return new ConnectingState(mUrl); });
+            if(cancelToken.IsCancellationRequested)
+                return Task.Factory.StartNew<IConnectionState>(() => { return new DisconnectedState(mUrl); });
+            else
+                return Task.Factory.StartNew<IConnectionState>(() => { return new ConnectingState(mUrl); });
         }
     }
 }
