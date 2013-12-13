@@ -49,7 +49,7 @@ namespace EventSource4Net
                             if (bytesRead > 0) // stream has not reached the end yet
                             {
                                 //Console.WriteLine("ReadCallback {0} bytesRead", bytesRead);
-                                string text = Encoding.ASCII.GetString(buffer, 0, bytesRead);
+                                string text = Encoding.UTF8.GetString(buffer, 0, bytesRead);
                                 string[] lines = StringSplitter.SplitIntoLines(text);
                                 ServerSentEvent sse = null;
                                 foreach (string line in lines)
