@@ -8,7 +8,7 @@ namespace EventSource4Net
 {
     public class StringSplitter
     {
-        public static string[] SplitIntoLines(string text)
+        public static string[] SplitIntoLines(string text, out string remainingText)
         {
             List<string> lines = new List<string>();
 
@@ -37,6 +37,9 @@ namespace EventSource4Net
                 }
                 previous = c;
             }
+
+            // Save the last chars that is not followed by a lineending.
+            remainingText = text.Substring(text.Length - lineLength);
 
             return lines.ToArray();
         }

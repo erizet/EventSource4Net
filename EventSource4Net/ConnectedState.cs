@@ -13,6 +13,8 @@ namespace EventSource4Net
     {
         private static readonly slf4net.ILogger _logger = slf4net.LoggerFactory.GetLogger(typeof(ConnectedState));
 
+        private ServerSentEvent mSse = null;
+        private string mRemainingText = string.Empty;   // the text that is not ended with a lineending char is saved for next call.
         private HttpWebResponse mResponse;
         public EventSourceState State { get { return EventSourceState.OPEN; } }
 
@@ -35,7 +37,7 @@ namespace EventSource4Net
                         byte[] buffer = new byte[1024 * 8];
                         var taskRead = stream.ReadAsync(buffer, 0, buffer.Length, cancelToken);
 
-                         try
+                        try
                         {
                             taskRead.Wait(cancelToken);
                         }
@@ -50,18 +52,18 @@ namespace EventSource4Net
                             {
                                 //Console.WriteLine("ReadCallback {0} bytesRead", bytesRead);
                                 string text = Encoding.UTF8.GetString(buffer, 0, bytesRead);
-                                string[] lines = StringSplitter.SplitIntoLines(text);
-                                ServerSentEvent sse = null;
+                                text = mRemainingText + text;
+                                string[] lines = StringSplitter.SplitIntoLines(text, out mRemainingText);
                                 foreach (string line in lines)
                                 {
                                     if (cancelToken.IsCancellationRequested) break;
 
                                     // Dispatch message if empty lne
-                                    if (string.IsNullOrEmpty(line.Trim()) && sse != null)
+                                    if (string.IsNullOrEmpty(line.Trim()) && mSse != null)
                                     {
                                         _logger.Trace("Message received");
-                                        msgReceived(sse);
-                                        sse = null;
+                                        msgReceived(mSse);
+                                        mSse = null;
                                     }
                                     else if (line.StartsWith(":"))
                                     {
@@ -83,26 +85,26 @@ namespace EventSource4Net
 
                                         if (String.Compare(fieldName, "event", true) == 0)
                                         {
-                                            sse = sse ?? new ServerSentEvent();
-                                            sse.EventType = fieldValue;
+                                            mSse = mSse ?? new ServerSentEvent();
+                                            mSse.EventType = fieldValue;
                                         }
                                         else if (String.Compare(fieldName, "data", true) == 0)
                                         {
-                                            sse = sse ?? new ServerSentEvent();
-                                            sse.Data = fieldValue + '\n';
+                                            mSse = mSse ?? new ServerSentEvent();
+                                            mSse.Data = fieldValue + '\n';
                                         }
                                         else if (String.Compare(fieldName, "id", true) == 0)
                                         {
-                                            sse = sse ?? new ServerSentEvent();
-                                            sse.LastEventId = fieldValue;
+                                            mSse = mSse ?? new ServerSentEvent();
+                                            mSse.LastEventId = fieldValue;
                                         }
                                         else if (String.Compare(fieldName, "retry", true) == 0)
                                         {
                                             int parsedRetry;
                                             if (int.TryParse(fieldValue, out parsedRetry))
                                             {
-                                                sse = sse ?? new ServerSentEvent();
-                                                sse.Retry = parsedRetry;
+                                                mSse = mSse ?? new ServerSentEvent();
+                                                mSse.Retry = parsedRetry;
                                             }
                                         }
                                         else
