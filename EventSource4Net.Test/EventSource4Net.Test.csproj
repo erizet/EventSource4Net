@@ -52,6 +52,9 @@
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="StringSplitterTest.cs" />
+    <Compile Include="TestableEventSource.cs" />
+    <Compile Include="EventSourceTest.cs" />
+    <Compile Include="WebRequesterFactoryTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\EventSource4Net\EventSource4Net.csproj">

@@ -48,15 +48,23 @@
     <Compile Include="EventSource.cs" />
     <Compile Include="EventSourceState.cs" />
     <Compile Include="IConnectionState.cs" />
+    <Compile Include="IServerResponse.cs" />
+    <Compile Include="IWebRequester.cs" />
+    <Compile Include="IWebRequesterFactory.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ServerResponse.cs" />
     <Compile Include="ServerSentEvent.cs" />
     <Compile Include="ServerSentEventReceivedEventArgs.cs" />
     <Compile Include="StateChangedEventArgs.cs" />
     <Compile Include="StringSplitter.cs" />
     <Compile Include="WatchDog.cs" />
+    <Compile Include="WebRequester.cs" />
+    <Compile Include="WebRequesterFactory.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="EventSource4Net.nuspec" />
+    <None Include="EventSource4Net.nuspec">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

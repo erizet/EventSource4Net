@@ -1,21 +1,64 @@
 ﻿using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System.Threading;
+using System.Collections.Generic;
 
 namespace EventSource4Net.Test
 {
     [TestClass]
     public class StringSplitterTest
     {
+        Uri url = new Uri("http://test.com");
+        CancellationTokenSource cts;
+        List<EventSourceState> states;
+        ServiceResponseMock response;
+        WebRequesterFactoryMock factory;
+        ManualResetEvent stateIsOpen;
+
+        
+        private TestableEventSource SetupAndConnect()
+        {
+            // setup
+            cts = new CancellationTokenSource();
+            states = new List<EventSourceState>();
+            response = new ServiceResponseMock(url, System.Net.HttpStatusCode.OK);
+            factory = new WebRequesterFactoryMock(response);
+            stateIsOpen = new ManualResetEvent(false);
+
+            TestableEventSource es = new TestableEventSource(url, factory);
+            es.StateChanged += (o, e) =>
+            {
+                states.Add(e.State);
+                if (e.State == EventSourceState.OPEN)
+                    stateIsOpen.Set();
+            };
+
+            return es;
+        }
+
         [TestMethod]
         public void TestDoubleLineFeed()
         {
-            string remainingText = string.Empty;
-            string[] lines =
-            StringSplitter.SplitIntoLines("test\n\n", out remainingText);
+            // setup
+            TestableEventSource es = SetupAndConnect();
 
-            Assert.AreEqual(lines.Length, 2);
-            Assert.AreEqual(lines[0], "test");
-            Assert.AreEqual(lines[1], string.Empty);
+            List<string> receivedMessages = new List<string>();
+            ManualResetEvent eventReceived = new ManualResetEvent(false);
+            es.EventReceived += (o, e) => 
+            {
+                receivedMessages.Add(e.Message.Data);
+                eventReceived.Set();
+            };
+            
+            // act
+            es.Start(cts.Token);
+            stateIsOpen.WaitOne();
+            response.WriteTestTextToStream("test\n\n");
+            eventReceived.WaitOne();
+
+            // assert
+            Assert.AreEqual(receivedMessages.Count, 1);
+            Assert.AreEqual(receivedMessages[0], "test");
         }
         [TestMethod]
         public void TestDoubleCarriageReturn()

@@ -13,14 +13,16 @@ namespace EventSource4Net
     {
         private static readonly slf4net.ILogger _logger = slf4net.LoggerFactory.GetLogger(typeof(ConnectedState));
 
+        private IWebRequesterFactory mWebRequesterFactory;
         private ServerSentEvent mSse = null;
         private string mRemainingText = string.Empty;   // the text that is not ended with a lineending char is saved for next call.
-        private HttpWebResponse mResponse;
+        private IServerResponse mResponse;
         public EventSourceState State { get { return EventSourceState.OPEN; } }
 
-        public ConnectedState(HttpWebResponse resp)
+        public ConnectedState(IServerResponse response, IWebRequesterFactory webRequesterFactory)
         {
-            mResponse = resp;
+            mResponse = response;
+            mWebRequesterFactory = webRequesterFactory;
         }
 
         public Task<IConnectionState> Run(Action<ServerSentEvent> msgReceived, CancellationToken cancelToken)
@@ -128,7 +130,7 @@ namespace EventSource4Net
                         //stream.Close();
                         //mResponse.Close();
                         //mResponse.Dispose();
-                        return new DisconnectedState(mResponse.ResponseUri);
+                        return new DisconnectedState(mResponse.ResponseUri, mWebRequesterFactory);
                     }
                 }
             });

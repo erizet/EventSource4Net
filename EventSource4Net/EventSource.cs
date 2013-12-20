@@ -16,7 +16,7 @@ namespace EventSource4Net
         public event EventHandler<StateChangedEventArgs> StateChanged;
         public event EventHandler<ServerSentEventReceivedEventArgs> EventReceived;
 
-
+        private IWebRequesterFactory _webRequesterFactory = new WebRequesterFactory();
         private int _timeout = 0;
         public Uri Url { get; private set; }
         public EventSourceState State { get { return CurrentState.State; } }
@@ -44,11 +44,27 @@ namespace EventSource4Net
 
         public EventSource(Uri url, int timeout)
         {
+            Initialize(url, timeout);
+        }
+
+        /// <summary>
+        /// Constructor for testing purposes
+        /// </summary>
+        /// <param name="factory">The factory that generates the WebRequester to use.</param>
+        protected EventSource(Uri url, IWebRequesterFactory factory)
+        {
+            _webRequesterFactory = factory;
+            Initialize(url, 0);
+        }
+
+        private void Initialize(Uri url, int timeout)
+        {
             _timeout = timeout;
             Url = url;
-            CurrentState = new DisconnectedState(Url);
+            CurrentState = new DisconnectedState(Url,_webRequesterFactory);
             _logger.Info("EventSource created for " + url.ToString());
         }
+
 
         /// <summary>
         /// Start the EventSource. 
