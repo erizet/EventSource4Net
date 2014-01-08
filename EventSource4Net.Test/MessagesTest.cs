@@ -14,9 +14,9 @@ namespace EventSource4Net.Test
         ServiceResponseMock response;
         WebRequesterFactoryMock factory;
         ManualResetEvent stateIsOpen;
-        List<ServerSentEvent> receivedMessages; 
+        List<ServerSentEvent> receivedMessages;
         ManualResetEvent eventReceived;
-        
+
         private TestableEventSource SetupAndConnect()
         {
             // setup
@@ -49,7 +49,7 @@ namespace EventSource4Net.Test
         {
             // setup
             TestableEventSource es = SetupAndConnect();
-            
+
             // act
             es.Start(cts.Token);
             stateIsOpen.WaitOrThrow();
@@ -144,6 +144,38 @@ namespace EventSource4Net.Test
             Assert.AreEqual(receivedMessages.Count, 1);
             Assert.AreEqual(receivedMessages[0].EventType, "test");
             Assert.AreEqual(receivedMessages[0].Data, "simple\n");
+        }
+        [TestMethod]
+        public void TestMultipleEvents()
+        {
+            // setup
+            TestableEventSource es = SetupAndConnect();
+
+            // act
+            es.Start(cts.Token);
+            stateIsOpen.WaitOrThrow();
+
+            //entire event in one line
+            response.WriteTestTextToStream("id: 1" + "\n" + "event: newevent" + "\n" + "data: Hello" + "\n\n");
+            eventReceived.WaitOrThrow();
+            eventReceived.Reset();
+
+            //This event is split up over multiple res.write lines 
+            response.WriteTestTextToStream("id:2 " + "\n");
+            response.WriteTestTextToStream("event: event 3" + "\n");
+            response.WriteTestTextToStream("data: Hello again");
+            response.WriteTestTextToStream("\n\n");
+            eventReceived.WaitOrThrow();
+            eventReceived.Reset();
+
+            //Again an event that is split up over multiple res.write statements
+            response.WriteTestTextToStream("id: 3" + "\n");
+            response.WriteTestTextToStream("event: event3" + "\n" + "data: Goodbye" + "\n\n");
+            eventReceived.WaitOrThrow();
+            eventReceived.Reset();
+
+            // assert
+            Assert.AreEqual(receivedMessages.Count, 3);
         }
     }
 }
