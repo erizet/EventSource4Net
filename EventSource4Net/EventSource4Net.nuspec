@@ -9,7 +9,7 @@
     <projectUrl>https://github.com/erizet/EventSource4Net</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>Eventsource for .net. Makes it simple to receive Server-Sent Events (SSE) in managed applications.</description>
-    <releaseNotes>Fixed a bug that fired event twice. Uses UTF8 decoding of data.</releaseNotes>
+    <releaseNotes>Fixed bugs in handling of received data.</releaseNotes>
     <copyright>Copyright 2012</copyright>
     <tags>Eventsource Server-Sent Events SSE</tags>
     <dependencies>

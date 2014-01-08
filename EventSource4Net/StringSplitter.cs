@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace EventSource4Net
 {
-    public class StringSplitter
+    internal class StringSplitter
     {
         public static string[] SplitIntoLines(string text, out string remainingText)
         {

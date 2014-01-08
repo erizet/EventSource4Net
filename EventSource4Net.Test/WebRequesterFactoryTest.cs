@@ -48,7 +48,7 @@ namespace EventSource4Net.Test
 
     class ServiceResponseMock : IServerResponse
     {
-        private MemoryStream mStream = new MemoryStream();
+        private Stream mStream;
         private StreamWriter mStreamWriter;
         private Uri mUrl;
         private HttpStatusCode mStatusCode;
@@ -59,6 +59,7 @@ namespace EventSource4Net.Test
         {
             mUrl = url;
             mStatusCode = statusCode;
+            mStream = new TestableStream();
             mStreamWriter = new StreamWriter(mStream);
         }
 
@@ -84,6 +85,7 @@ namespace EventSource4Net.Test
         public void WriteTestTextToStream(string text)
         {
             mStreamWriter.Write(text);
+            mStreamWriter.Flush();
         }
     }
 
@@ -95,4 +97,76 @@ namespace EventSource4Net.Test
             ServerResponse = response;
         }
     }
+
+
+    class TestableStream : Stream
+    {
+        long _pos = 0;
+        System.Collections.Concurrent.BlockingCollection<string> _texts = new System.Collections.Concurrent.BlockingCollection<string>();
+
+        public override bool CanRead
+        {
+            get { return true; }
+        }
+
+        public override bool CanSeek
+        {
+            get { return true; }
+        }
+
+        public override bool CanWrite
+        {
+            get { return true; }
+        }
+
+        public override void Flush()
+        {
+
+        }
+
+        public override long Length
+        {
+            get { return _texts.Count(); }
+        }
+
+        public override long Position
+        {
+            get
+            {
+                return _pos;
+            }
+            set
+            {
+                _pos = value;
+            }
+        }
+
+        public override int Read(byte[] buffer, int offset, int count)
+        {
+            string s = _texts.Take();
+
+            byte[] encodedText = Encoding.UTF8.GetBytes(s);
+            encodedText.CopyTo(buffer, offset);
+            return encodedText.Length;
+        }
+
+        public override long Seek(long offset, SeekOrigin origin)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override void SetLength(long value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override void Write(byte[] buffer, int offset, int count)
+        {
+            string s = Encoding.UTF8.GetString(buffer, offset, count);
+            _texts.Add(s);
+            //_texts.CompleteAdding();
+        }
+    }
+
+
 }

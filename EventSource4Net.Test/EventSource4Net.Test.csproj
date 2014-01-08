@@ -30,7 +30,7 @@
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
@@ -51,9 +51,10 @@
   </Choose>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="StringSplitterTest.cs" />
+    <Compile Include="MessagesTest.cs" />
     <Compile Include="TestableEventSource.cs" />
     <Compile Include="EventSourceTest.cs" />
+    <Compile Include="TestExtensions.cs" />
     <Compile Include="WebRequesterFactoryTest.cs" />
   </ItemGroup>
   <ItemGroup>
